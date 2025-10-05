@@ -107,35 +107,20 @@ export const sendServicesEmail = async (
                       <td style="padding: 12px; border: 1px solid #dee2e6;">${phone}</td>
                   </tr>
                   <tr>
-                      <td style="padding: 12px; font-weight: bold; background: #f8f9fa; border: 1px solid #dee2e6;">Province:</td>
+                      <td style="padding: 12px; font-weight: bold; background: #f8f9fa; border: 1px solid #dee2e6;">State:</td>
                       <td style="padding: 12px; border: 1px solid #dee2e6;">${province || 'Not provided'}</td>
                   </tr>
                   <tr>
                       <td style="padding: 12px; font-weight: bold; background: #f8f9fa; border: 1px solid #dee2e6;">Address:</td>
-                      <td style="padding: 12px; border: 1px solid #dee2e6;">${address || 'Not provided'}</td>
-                  </tr>
-                  <tr>
-                      <td style="padding: 12px; font-weight: bold; background: #f8f9fa; border: 1px solid #dee2e6;">SSN:</td>
-                      <td style="padding: 12px; border: 1px solid #dee2e6;">${ssn || 'Not provided'}</td>
-                  </tr>
-              </table>
-
-              <h2 style="color: #1c402a; border-bottom: 2px solid #1c402a; padding-bottom: 10px;">
-                  🆔 License Information
-              </h2>
-              
-              <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
-                  <tr>
-                      <td style="padding: 12px; font-weight: bold; width: 200px; background: #f8f9fa; border: 1px solid #dee2e6;">License Number:</td>
                       <td style="padding: 12px; border: 1px solid #dee2e6;">${licenseNumber || 'Not provided'}</td>
                   </tr>
                   <tr>
+                      <td style="padding: 12px; font-weight: bold; background: #f8f9fa; border: 1px solid #dee2e6;">VAT Number:</td>
+                      <td style="padding: 12px; border: 1px solid #dee2e6;">${ssn || 'Not provided'}</td>
+                  </tr>
+                   <tr>
                       <td style="padding: 12px; font-weight: bold; background: #f8f9fa; border: 1px solid #dee2e6;">Date of Birth:</td>
                       <td style="padding: 12px; border: 1px solid #dee2e6;">${dateOfBirth || 'Not provided'}</td>
-                  </tr>
-                  <tr>
-                      <td style="padding: 12px; font-weight: bold; background: #f8f9fa; border: 1px solid #dee2e6;">Blood Type:</td>
-                      <td style="padding: 12px; border: 1px solid #dee2e6;">${bloodType || 'Not provided'}</td>
                   </tr>
               </table>
 

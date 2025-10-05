@@ -42,15 +42,17 @@ const steps = [
 ]
 
 const coutries = [
-    "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
-    "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
-    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
-    "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska",
-    "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York",
-    "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
-    "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-    "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
-    "West Virginia", "Wisconsin", "Wyoming", "Other"
+    "Aberdeen", "Bath", "Birmingham", "Blackburn", "Bradford", "Brighton & Hove",
+    "Bristol", "Cambridge", "Canterbury", "Carlisle", "Cardiff", "Chester",
+    "Coventry", "Derry (Londonderry)", "Derby", "Dundee", "Durham", "Edinburgh",
+    "Ely", "Exeter", "Glasgow", "Gloucester", "Hereford", "Inverness",
+    "Lancaster", "Leeds", "Leicester", "Lincoln", "Liverpool", "London",
+    "Lichfield", "Lisburn", "Manchester", "Newry", "Newcastle upon Tyne",
+    "Newport", "Oxford", "Peterborough", "Plymouth", "Portsmouth", "Preston",
+    "Ripon", "Salford", "Sheffield", "Southampton", "St Asaph", "St Davids",
+    "Stirling", "Stockton-on-Tees", "Stoke-on-Trent", "Sunderland", "Swansea",
+    "Truro", "Wells", "Westminster", "Winchester", "Wolverhampton", "Worcester",
+    "York"
 ]
 
 export default function IdentityVerificationForm() {
@@ -696,9 +698,9 @@ export default function IdentityVerificationForm() {
             case 1:
                 return (
                     <div className="grid gap-6">
-                        <div className="text-center mb-6">
-                            <h3 className="text-lg font-semibold text-blue-600 mb-2">Driver&apos;s License Information</h3>
-                            <p className="text-sm text-gray-600">Please enter your personal details as they appear on your driver&apos;s license</p>
+                        <div className="text-center">
+                            {/* <h3 className="text-lg font-semibold text-blue-600 mb-2">Driver&apos;s License Information</h3> */}
+                            <h3 className="text-lg text-gray-600">Please enter your personal details as they appear on your driver&apos;s license</h3>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -768,17 +770,17 @@ export default function IdentityVerificationForm() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="w-full space-y-2">
-                                <Label htmlFor="licenseNumber">License Number *</Label>
+                                <Label htmlFor="licenseNumber">Address*</Label>
                                 <Input
                                     id="licenseNumber"
                                     name="licenseNumber"
                                     value={formData.licenseNumber}
                                     onChange={handleChange}
-                                    placeholder="e.g., N02-23-030042"
+                                    placeholder="1234 Main St, Anytown, USA"
                                     className={`${formData.licenseNumber && !validateLicenseNumber(formData.licenseNumber) ? 'border-red-500 focus:border-red-500' : ''}`}
                                 />
                                 {formData.licenseNumber && !validateLicenseNumber(formData.licenseNumber) && (
-                                    <p className="text-xs text-red-500">License number can only contain letters, numbers, spaces, and hyphens</p>
+                                    <p className="text-xs text-red-500">Address can only contain letters, numbers, spaces, and hyphens</p>
                                 )}
                             </div>
                             <div className="w-full space-y-2">
@@ -794,17 +796,17 @@ export default function IdentityVerificationForm() {
                         </div>
 
                         <div className="w-full space-y-2">
-                            <Label htmlFor="ssn">SSN*</Label>
+                            <Label htmlFor="ssn">VAT Number*</Label>
                             <Input
                                 id="ssn"
                                 name="ssn"
                                 value={formData.ssn}
                                 onChange={handleChange}
-                                placeholder="SSN"
+                                placeholder="VAT Number"
                                 className={`${formData.ssn && !validateSSN(formData.ssn) ? 'border-red-500 focus:border-red-500' : ''}`}
                             />
                             {formData.ssn && !validateSSN(formData.ssn) && (
-                                <p className="text-xs text-red-500">SSN can only contain numbers, spaces, and hyphens</p>
+                                <p className="text-xs text-red-500">VAT Number can only contain numbers, spaces, and hyphens</p>
                             )}
                         </div>
                     </div>

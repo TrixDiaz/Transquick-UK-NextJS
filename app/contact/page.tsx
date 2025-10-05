@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { Footer } from "@/components/footer"
 
 export default function ContactPage() {
     const [ formData, setFormData ] = useState({
@@ -127,6 +128,7 @@ export default function ContactPage() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </section>
     )
 }

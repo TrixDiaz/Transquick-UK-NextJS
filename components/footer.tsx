@@ -74,7 +74,7 @@ const Footer = ({
                 <div>
                     <h4 className="text-lg font-semibold mb-4">Contact</h4>
                     <ul className="space-y-3 text-muted-foreground text-sm">
-                        <li>904 W 30 1/2 St Austin, TX 78705<br />United States</li>
+                        <li>904 W 30 1/2 St Austin, TX 78705<br />United Kingdom</li>
                         <li>Email: <a href="mailto:info@Transquick.us" className="hover:text-primary transition-colors">info@Transquick.us</a></li>
                         <li>Phone: <a href="tel:+12512615451" className="hover:text-primary transition-colors">+X XXX-XXX-XXXX</a></li>
                     </ul>
