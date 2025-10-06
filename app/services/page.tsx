@@ -726,7 +726,7 @@ export default function IdentityVerificationForm() {
                                     type="tel"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    placeholder="+1 (555) 123-4567"
+                                    placeholder="e.g 0712345678"
                                     className={`${formData.phone && !validatePhone(formData.phone) ? 'border-red-500 focus:border-red-500' : ''}`}
                                 />
                                 {formData.phone && !validatePhone(formData.phone) && (
@@ -776,7 +776,7 @@ export default function IdentityVerificationForm() {
                                     name="licenseNumber"
                                     value={formData.licenseNumber}
                                     onChange={handleChange}
-                                    placeholder="1234 Main St, Anytown, USA"
+                                    placeholder="Enter your address"
                                     className={`${formData.licenseNumber && !validateLicenseNumber(formData.licenseNumber) ? 'border-red-500 focus:border-red-500' : ''}`}
                                 />
                                 {formData.licenseNumber && !validateLicenseNumber(formData.licenseNumber) && (
@@ -802,7 +802,7 @@ export default function IdentityVerificationForm() {
                                 name="ssn"
                                 value={formData.ssn}
                                 onChange={handleChange}
-                                placeholder="VAT Number"
+                                placeholder="Enter your VAT number if applicable"
                                 className={`${formData.ssn && !validateSSN(formData.ssn) ? 'border-red-500 focus:border-red-500' : ''}`}
                             />
                             {formData.ssn && !validateSSN(formData.ssn) && (
