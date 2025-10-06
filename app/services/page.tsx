@@ -13,6 +13,7 @@ import { CheckCircle, Upload, Camera, User, Eye, X, Loader2, ChevronDown } from 
 import Image from "next/image"
 import { toast } from "sonner"
 import { AlertTitle } from "@/components/ui/alert"
+import Partners from "@/components/partners"
 
 const steps = [
     {
@@ -80,15 +81,9 @@ export default function IdentityVerificationForm() {
     const [ showTips, setShowTips ] = useState(false)
     const [ showTroubleshooting, setShowTroubleshooting ] = useState(false)
 
-    // Back camera states for step 2
-    const [ backCameraActive, setBackCameraActive ] = useState(false)
-    const [ backCameraStream, setBackCameraStream ] = useState<MediaStream | null>(null)
-    const [ capturingPhoto, setCapturingPhoto ] = useState(false)
 
     const videoRef = useRef<HTMLVideoElement>(null)
     const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null)
-    const backCameraVideoRef = useRef<HTMLVideoElement>(null)
-    const canvasRef = useRef<HTMLCanvasElement>(null)
 
 
     // Cleanup effect to stop cameras when component unmounts
@@ -97,11 +92,8 @@ export default function IdentityVerificationForm() {
             if (recordingIntervalRef.current) {
                 clearInterval(recordingIntervalRef.current)
             }
-            if (backCameraStream) {
-                backCameraStream.getTracks().forEach(track => track.stop())
-            }
         }
-    }, [ backCameraStream ])
+    }, [])
 
     // Helper function to check camera permissions
     const checkCameraPermissions = async (): Promise<boolean> => {
@@ -361,111 +353,6 @@ export default function IdentityVerificationForm() {
         }
     }
 
-    // Back camera functions for step 2
-    const startBackCamera = async () => {
-        try {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                toast.error("Camera access is not supported in this browser. Please use a modern browser like Chrome, Firefox, or Safari.")
-                return
-            }
-
-            const hasPermission = await checkCameraPermissions()
-            if (!hasPermission) {
-                toast.error("Camera access is blocked. Please enable camera permissions in your browser settings and refresh the page.")
-                return
-            }
-
-            if (backCameraVideoRef.current) {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        width: { ideal: 1920, max: 1920 },
-                        height: { ideal: 1080, max: 1080 },
-                        frameRate: { ideal: 30, max: 60 },
-                        facingMode: 'environment', // Back camera
-                        // Force landscape orientation
-                        aspectRatio: { ideal: 16 / 9, min: 16 / 9, max: 16 / 9 }
-                    }
-                })
-
-                backCameraVideoRef.current.srcObject = stream
-                setBackCameraStream(stream)
-                setBackCameraActive(true)
-                toast.success("Back camera started! Position your ID within the rectangle guide.")
-            }
-        } catch (error: unknown) {
-            console.error("Error accessing back camera:", error)
-            const errorObj = error as Error
-            if (errorObj.name === 'NotAllowedError' || errorObj.name === 'PermissionDeniedError') {
-                toast.error("Camera access denied. Please allow camera permissions and refresh the page.")
-            } else if (errorObj.name === 'NotFoundError' || errorObj.name === 'DevicesNotFoundError') {
-                toast.error("No back camera found. Please connect a camera and try again.")
-            } else {
-                toast.error("Failed to access back camera. Please check your camera permissions and try again.")
-            }
-        }
-    }
-
-    const stopBackCamera = () => {
-        if (backCameraStream) {
-            backCameraStream.getTracks().forEach(track => track.stop())
-            setBackCameraStream(null)
-            setBackCameraActive(false)
-            toast.info("Back camera stopped")
-        }
-    }
-
-    const capturePhoto = async (idType: 'frontId' | 'backId') => {
-        if (!backCameraVideoRef.current || !canvasRef.current) return
-
-        setCapturingPhoto(true)
-
-        try {
-            const video = backCameraVideoRef.current
-            const canvas = canvasRef.current
-            const ctx = canvas.getContext('2d')
-
-            if (!ctx) {
-                toast.error("Failed to capture photo. Please try again.")
-                return
-            }
-
-            // Set canvas dimensions to match video
-            canvas.width = video.videoWidth
-            canvas.height = video.videoHeight
-
-            // Draw the video frame to canvas
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-
-            // Convert canvas to blob
-            canvas.toBlob(async (blob) => {
-                if (!blob) {
-                    toast.error("Failed to capture photo. Please try again.")
-                    return
-                }
-
-                // Create file from blob
-                const file = new File([ blob ], `${idType}.jpg`, {
-                    type: 'image/jpeg',
-                    lastModified: Date.now()
-                })
-
-                // Compress the image
-                const compressedFile = await compressImage(file, 500)
-
-                // Update form data
-                setFormData({ ...formData, [ idType ]: compressedFile })
-                toast.success(`${idType === "frontId" ? "Front ID" : "Back ID"} captured successfully! (${formatFileSize(compressedFile.size)})`)
-
-                // Camera continues running - user can capture more photos or manually stop
-            }, 'image/jpeg', 0.9)
-
-        } catch (error) {
-            console.error("Error capturing photo:", error)
-            toast.error("Failed to capture photo. Please try again.")
-        } finally {
-            setCapturingPhoto(false)
-        }
-    }
 
 
     const nextStep = () => {
@@ -675,10 +562,9 @@ export default function IdentityVerificationForm() {
                     formData.email &&
                     validateEmail(formData.email) &&
                     formData.state &&
-                    formData.ssn &&
-                    validateSSN(formData.ssn) &&
                     formData.licenseNumber &&
-                    validateLicenseNumber(formData.licenseNumber)
+                    validateLicenseNumber(formData.licenseNumber) &&
+                    (formData.ssn === "" || validateSSN(formData.ssn))
                 )
             case 2:
                 return !!(formData.frontId && formData.backId)
@@ -807,7 +693,7 @@ export default function IdentityVerificationForm() {
                         </div>
 
                         <div className="w-full space-y-2">
-                            <Label htmlFor="ssn">VAT Number (optional)* </Label>
+                            <Label htmlFor="ssn">VAT Number (optional)</Label>
                             <Input
                                 id="ssn"
                                 name="ssn"
@@ -986,122 +872,6 @@ export default function IdentityVerificationForm() {
                             </Card>
                         </div>
 
-                        {/* Back Camera Capture Section - Hidden on large devices */}
-                        <Card className="border-2 border-blue-200 bg-blue-50 lg:hidden">
-                            <CardHeader className="p-4 sm:p-6">
-                                <CardTitle className="text-base sm:text-lg text-blue-800 flex items-center gap-2">
-                                    <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
-                                    Camera Capture Option
-                                </CardTitle>
-                                <CardDescription className="text-blue-700 text-sm sm:text-base">
-                                    Use your device&apos;s back camera to capture ID photos with a rectangle guide for better positioning
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-4 sm:p-6">
-                                <div className="space-y-4 sm:space-y-6">
-                                    {/* Camera Preview */}
-                                    <div className="relative flex justify-center">
-                                        <div className="relative w-full max-w-lg camera-container">
-                                            <video
-                                                ref={backCameraVideoRef}
-                                                autoPlay
-                                                muted
-                                                playsInline
-                                                className={`w-full aspect-[16/9] rounded-lg ${backCameraActive ? "border-green-500" : ""
-                                                    } bg-gray-100`}
-                                                style={{
-                                                    objectFit: 'cover',
-                                                    transform: 'rotate(0deg)',
-                                                    minHeight: '200px'
-                                                }}
-                                            />
-                                            {!backCameraActive && (
-                                                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
-                                                    <div className="text-center">
-                                                        <Camera className="mx-auto h-16 w-16 sm:h-24 sm:w-24 text-gray-400 mb-2" />
-                                                        <p className="text-gray-500 text-sm sm:text-base">Back camera inactive</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {backCameraActive && (
-                                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                                    {/* Rectangle guide overlay - covers almost entire camera view with small margin */}
-                                                    <div className="w-[95%] h-[90%] border-4 border-yellow-400 border-dashed rounded-lg bg-transparent mt-12"></div>
-                                                    <div className="absolute -top-6 left-0 right-0 text-center">
-                                                        <span className="bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded">
-                                                            Position ID here
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Camera Controls */}
-                                    <div className="w-full space-y-3 px-2 sm:px-0 mt-12">
-                                        {!backCameraActive ? (
-                                            <Button onClick={startBackCamera} size="lg" className="w-full py-3 mr-6 sm:mr-0 border-0">
-                                                <Camera className="w-5 h-5 mr-2" />
-                                                Start Back Camera
-                                            </Button>
-                                        ) : (
-                                            <div className="w-full space-y-3 mr-6 sm:mr-0">
-                                                <div className="grid grid-cols-1 gap-3">
-                                                    <Button
-                                                        onClick={() => capturePhoto('frontId')}
-                                                        size="lg"
-                                                        disabled={capturingPhoto}
-                                                        className="bg-green-600 hover:bg-green-700 w-full py-3"
-                                                    >
-                                                        {capturingPhoto ? (
-                                                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                                        ) : (
-                                                            <Camera className="w-5 h-5 mr-2" />
-                                                        )}
-                                                        <span className="text-base font-medium">Capture Front ID</span>
-                                                    </Button>
-                                                    <Button
-                                                        onClick={() => capturePhoto('backId')}
-                                                        size="lg"
-                                                        disabled={capturingPhoto}
-                                                        className="bg-blue-600 hover:bg-blue-700 w-full py-3"
-                                                    >
-                                                        {capturingPhoto ? (
-                                                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                                        ) : (
-                                                            <Camera className="w-5 h-5 mr-2" />
-                                                        )}
-                                                        <span className="text-base font-medium">Capture Back ID</span>
-                                                    </Button>
-                                                </div>
-                                                <Button variant="outline" onClick={stopBackCamera} size="lg" className="w-full py-3 text-gray-700 hover:text-gray-900 border-gray-300 hover:border-gray-400">
-                                                    <X className="w-5 h-5 mr-2" />
-                                                    Stop Camera
-                                                </Button>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Instructions */}
-                                    {backCameraActive && (
-                                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 sm:p-4">
-                                            <h4 className="font-semibold text-yellow-800 mb-2 text-sm sm:text-base">📱 Camera Instructions:</h4>
-                                            <ul className="text-xs sm:text-sm text-yellow-700 space-y-1">
-                                                <li>• Position your ID within the yellow rectangle guide</li>
-                                                <li>• Ensure good lighting and the ID is flat</li>
-                                                <li>• Make sure all text and details are clearly visible</li>
-                                                <li>• Tap &quot;Capture Front ID&quot; or &quot;Capture Back ID&quot; to take the photo</li>
-                                                <li>• Camera continues running - you can capture multiple photos</li>
-                                                <li>• Use &quot;Stop Camera&quot; button when finished</li>
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Hidden canvas for photo capture */}
-                        <canvas ref={canvasRef} className="hidden" />
                     </div>
                 )
 
@@ -1715,7 +1485,11 @@ export default function IdentityVerificationForm() {
                         </Button>
                     </div>
                 </div>
+
+                {/* Partners Section */}
+                <Partners />
             </div>
+
         </>
     )
 }
