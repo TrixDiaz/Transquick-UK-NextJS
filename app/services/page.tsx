@@ -720,15 +720,20 @@ export default function IdentityVerificationForm() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="phone">Phone Number *</Label>
-                                <Input
-                                    id="phone"
-                                    name="phone"
-                                    type="tel"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    placeholder="e.g 0712345678"
-                                    className={`${formData.phone && !validatePhone(formData.phone) ? 'border-red-500 focus:border-red-500' : ''}`}
-                                />
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span className="text-lg">🇬🇧</span>
+                                    </div>
+                                    <Input
+                                        id="phone"
+                                        name="phone"
+                                        type="tel"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        placeholder="e.g 0712345678"
+                                        className={`pl-10 ${formData.phone && !validatePhone(formData.phone) ? 'border-red-500 focus:border-red-500' : ''}`}
+                                    />
+                                </div>
                                 {formData.phone && !validatePhone(formData.phone) && (
                                     <p className="text-xs text-red-500">Phone can only contain numbers, spaces, parentheses, hyphens, and plus sign</p>
                                 )}
