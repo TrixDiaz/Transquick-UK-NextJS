@@ -7,7 +7,7 @@ export default function Partners() {
         { src: "/images/uber.png", alt: "Uber" },
         { src: "/images/collect.png", alt: "Geopost" },
         { src: "/images/geopost.png", alt: "Geopost" },
-        { src: "/images/dash.png", alt: "Dash" },
+        { src: "/images/Dash.png", alt: "Dash" },
         { src: "/images/amazon.png", alt: "Amazon" }
     ]
 
