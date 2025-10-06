@@ -722,7 +722,13 @@ export default function IdentityVerificationForm() {
                                 <Label htmlFor="phone">Phone Number *</Label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <span className="text-lg">🇬🇧</span>
+                                        <svg width="20" height="15" viewBox="0 0 20 15" className="rounded-sm">
+                                            <rect width="20" height="15" fill="#012169" />
+                                            <path d="M0 0l20 15M20 0L0 15" stroke="#fff" strokeWidth="2" />
+                                            <path d="M0 0l20 15M20 0L0 15" stroke="#C8102E" strokeWidth="1" />
+                                            <path d="M10 0v15M0 7.5h20" stroke="#fff" strokeWidth="2" />
+                                            <path d="M10 0v15M0 7.5h20" stroke="#C8102E" strokeWidth="1" />
+                                        </svg>
                                     </div>
                                     <Input
                                         id="phone"
@@ -730,7 +736,7 @@ export default function IdentityVerificationForm() {
                                         type="tel"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        placeholder="e.g 0712345678"
+                                        placeholder=" e.g +44 20 7123 4567"
                                         className={`pl-10 ${formData.phone && !validatePhone(formData.phone) ? 'border-red-500 focus:border-red-500' : ''}`}
                                     />
                                 </div>
