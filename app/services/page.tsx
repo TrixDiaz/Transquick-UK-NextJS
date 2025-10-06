@@ -796,7 +796,7 @@ export default function IdentityVerificationForm() {
                         </div>
 
                         <div className="w-full space-y-2">
-                            <Label htmlFor="ssn">VAT Number*</Label>
+                            <Label htmlFor="ssn">VAT Number (optional)* </Label>
                             <Input
                                 id="ssn"
                                 name="ssn"
